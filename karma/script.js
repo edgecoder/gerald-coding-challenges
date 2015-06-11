@@ -3,12 +3,12 @@ var $$ = {
     localStorage["karma.data"] = JSON.stringify(this.data);
   },
   readData: function() {
-    this.data = JSON.parse(localStorage["karma.data"]);
+    this.data = JSON.parse(localStorage["karma.data"] || "[]");
   },
   leaderboard: function() {
     return this.data.sort(this.compare);
   },
-  compare: function (a, b){
+  compare: function(a, b) {
     return b.points - a.points;
   },
   modifyPointsFor: function(indexInArray, newPoints) {
@@ -16,8 +16,12 @@ var $$ = {
     this.storeData();
     this.redrawUI();
   },
-  redrawUI: function(){
+  redrawUI: function() {
     $("#ppl").empty();
+    if ($$.data.length === 0) {
+      $("#ppl").text("Nothing here, yo");
+      return;
+    }
     var sorted = $$.leaderboard();
     var $template = $(".person:first"), $clonedLi;
     var ppl = sorted.map(function(p, i) {
@@ -32,7 +36,7 @@ var $$ = {
     $("#ppl").append(ppl);
   },
   eventHandler: function(){
-    $("#ppl").on("dblclick", ".points", function(event) {
+    $("#ppl").on("click", ".points", function(event) {
       var $points = $(this);
       $points.hide();
       $points.siblings(".input").show();
