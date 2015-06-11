@@ -14,7 +14,7 @@ var $$ = {
   modifyPointsFor: function(indexInArray, newPoints) {
     this.data[indexInArray].points = newPoints;
     this.storeData();
-    this.redrawUI();
+    // this.redrawUI();
   },
   redrawUI: function() {
     $("#ppl").empty();
@@ -36,6 +36,15 @@ var $$ = {
     $("#ppl").append(ppl);
   },
   eventHandler: function(){
+    $(document).on("click", function(e) {
+      e.stopPropagation();
+      if (!$(e.target).is(":input")) {
+        $(".person :has(:input:visible)").each(function(i, e) {
+          // $$.updatePoints($(e));
+        });
+        // $$.redrawUI();
+      }
+    });
     $("#ppl").on("click", ".points", function(event) {
       var $points = $(this);
       $points.hide();
@@ -43,14 +52,18 @@ var $$ = {
     }).on("keyup", "input", function(event) {
       if (event.which === 13) {
         var $input = $(this);
-        var $person = $input.parents(".person");
-        var personIndex = $person.data("order");
-        var newVal = $input.val();
-        $$.modifyPointsFor(personIndex, newVal);
-        $person.find(".input").hide();
-        $person.find(".points").text(newVal).show();
+        $$.updatePoints($input);
+        $$.redrawUI();
       }
     });
+  },
+  updatePoints: function($input) {
+    var $person = $input.parents(".person");
+    var personIndex = $person.data("order");
+    var newVal = $input.val();
+    $$.modifyPointsFor(personIndex, newVal);
+    $person.find(".input").hide();
+    $person.find(".points").text(newVal).show();
   },
   data: []
 }
