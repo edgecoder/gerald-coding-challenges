@@ -38,11 +38,11 @@ var $$ = {
   eventHandler: function(){
     $(document).on("click", function(e) {
       e.stopPropagation();
-      if (!$(e.target).is(":input")) {
-        $(".person :has(:input:visible)").each(function(i, e) {
-          // $$.updatePoints($(e));
+      if (!$(e.target).is(":input,.points")) {
+        $(".person:has(:input:visible)").each(function(i, e) {
+          $$.updatePoints($(e).find("input"));
         });
-        // $$.redrawUI();
+        $$.redrawUI();
       }
     });
     $("#ppl").on("click", ".points", function(event) {
